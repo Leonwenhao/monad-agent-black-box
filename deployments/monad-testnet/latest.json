@@ -1,0 +1,99 @@
+{
+  "network": "Monad testnet",
+  "chainId": 10143,
+  "runTimestamp": "2026-05-12T06:18:29.908Z",
+  "command": "npm run runner:demo:monad",
+  "sessionId": "0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602",
+  "contracts": {
+    "traceRegistry": {
+      "address": "0x8cac8a133c703a9048adfd7ef6cbf878efa4ed38",
+      "deploymentTxHash": "0x976caf53e25d198fc74d9e701dd81cde1c1ee7907048b16f93c3fd6fc6721105",
+      "deploymentTxExplorerUrl": "https://testnet.monadexplorer.com/tx/0x976caf53e25d198fc74d9e701dd81cde1c1ee7907048b16f93c3fd6fc6721105",
+      "explorerUrl": "https://testnet.monadexplorer.com/address/0x8cac8a133c703a9048adfd7ef6cbf878efa4ed38"
+    },
+    "demoTreasuryAction": {
+      "address": "0x4197dde02b9531495d3cc83dbea2d2156c557fe7",
+      "deploymentTxHash": "0xa41cb5deeab2e71f852aa04bea51dc45de950dc90e3df75c5dcb32254b30526b",
+      "deploymentTxExplorerUrl": "https://testnet.monadexplorer.com/tx/0xa41cb5deeab2e71f852aa04bea51dc45de950dc90e3df75c5dcb32254b30526b",
+      "explorerUrl": "https://testnet.monadexplorer.com/address/0x4197dde02b9531495d3cc83dbea2d2156c557fe7"
+    }
+  },
+  "transactions": {
+    "startSession": {
+      "txHash": "0xd8916cc39d5f91d91c4df7b540f3dda0aeec072317b31c065d62c312b4647508",
+      "explorerUrl": "https://testnet.monadexplorer.com/tx/0xd8916cc39d5f91d91c4df7b540f3dda0aeec072317b31c065d62c312b4647508"
+    },
+    "traceRecords": [
+      {
+        "step": 1,
+        "eventType": "goal.received",
+        "txHash": "0x8f0b08ae55465cbb795456ad9c41e89ebc83c3b7be739d70ff964ad404eb3e7e",
+        "explorerUrl": "https://testnet.monadexplorer.com/tx/0x8f0b08ae55465cbb795456ad9c41e89ebc83c3b7be739d70ff964ad404eb3e7e"
+      },
+      {
+        "step": 2,
+        "eventType": "plan.created",
+        "txHash": "0x95d059c358ac11bc2712a04adfbe7dd15bfca2bc222c1eb2847c64ca529afb0e",
+        "explorerUrl": "https://testnet.monadexplorer.com/tx/0x95d059c358ac11bc2712a04adfbe7dd15bfca2bc222c1eb2847c64ca529afb0e"
+      },
+      {
+        "step": 3,
+        "eventType": "tool.simulation",
+        "txHash": "0xf0b94278b464aa4026b8fd9aea1bcc387123277b9fe0cf996bcba4dc094afa92",
+        "explorerUrl": "https://testnet.monadexplorer.com/tx/0xf0b94278b464aa4026b8fd9aea1bcc387123277b9fe0cf996bcba4dc094afa92"
+      },
+      {
+        "step": 4,
+        "eventType": "risk.rejection",
+        "txHash": "0x52bdd33d613a9fa403a282fa7f149c87a1e4a460c6967df4bcb1882da1a9b5df",
+        "explorerUrl": "https://testnet.monadexplorer.com/tx/0x52bdd33d613a9fa403a282fa7f149c87a1e4a460c6967df4bcb1882da1a9b5df"
+      },
+      {
+        "step": 5,
+        "eventType": "policy.approved",
+        "txHash": "0x82db62ad4ec34c7b39f1a5a4aa1d8467c3fe1aaea6cc136f1d64ca2c38c7044d",
+        "explorerUrl": "https://testnet.monadexplorer.com/tx/0x82db62ad4ec34c7b39f1a5a4aa1d8467c3fe1aaea6cc136f1d64ca2c38c7044d"
+      },
+      {
+        "step": 6,
+        "eventType": "execution.submitted",
+        "txHash": "0x440e5937fcae8c7cdc4d5bfd99441b7439d7e0f4cb03b1f67c8c7e9bb7d2ada9",
+        "explorerUrl": "https://testnet.monadexplorer.com/tx/0x440e5937fcae8c7cdc4d5bfd99441b7439d7e0f4cb03b1f67c8c7e9bb7d2ada9"
+      },
+      {
+        "step": 7,
+        "eventType": "execution.confirmed",
+        "txHash": "0x8937b6b83faacca944fbe49d53e40a7155d62d9499bab2d0415b6651f3b900ba",
+        "explorerUrl": "https://testnet.monadexplorer.com/tx/0x8937b6b83faacca944fbe49d53e40a7155d62d9499bab2d0415b6651f3b900ba"
+      },
+      {
+        "step": 8,
+        "eventType": "session.summary",
+        "txHash": "0x06d2a7f914a976dc1acb2089f0838d6b8cfbffa25b35697bcbf60a52db38f8cc",
+        "explorerUrl": "https://testnet.monadexplorer.com/tx/0x06d2a7f914a976dc1acb2089f0838d6b8cfbffa25b35697bcbf60a52db38f8cc"
+      }
+    ],
+    "execution": {
+      "txHash": "0xae057ea7934064be906414ab5c1abd3630adf057343a48278c0a4354cb893374",
+      "explorerUrl": "https://testnet.monadexplorer.com/tx/0xae057ea7934064be906414ab5c1abd3630adf057343a48278c0a4354cb893374"
+    },
+    "linkExecution": {
+      "txHash": "0xbd278987c0b37921f8e6363b80b02ab72d052c5908defcfaef8dc67d6fc27153",
+      "explorerUrl": "https://testnet.monadexplorer.com/tx/0xbd278987c0b37921f8e6363b80b02ab72d052c5908defcfaef8dc67d6fc27153"
+    },
+    "closeSession": {
+      "txHash": "0x5f13c9aa1d1487c359fe6798a51bfd45df893f691f16cd830e348707361f5151",
+      "explorerUrl": "https://testnet.monadexplorer.com/tx/0x5f13c9aa1d1487c359fe6798a51bfd45df893f691f16cd830e348707361f5151"
+    }
+  },
+  "runnerOutput": {
+    "summaryPath": "runner/out/summary.json",
+    "sessionDir": "runner/out/traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602"
+  },
+  "frontendBuildInput": {
+    "latestSessionPath": "apps/web/public/session-data",
+    "committedMonadSessionPath": "apps/web/public/monad-testnet-session",
+    "seededFallbackPath": "apps/web/public/seeded-session",
+    "note": "npm run runner:demo:monad refreshes runner/out, then npm run web:prepare-session copies the latest public session without deleting the committed Monad session or seeded fallback."
+  }
+}

@@ -1,0 +1,44 @@
+# Goal 8 Monad Deploy Failure
+
+timestamp: 2026-05-12T06:15:22.276Z
+command: npm run runner:demo:monad
+failedStep: Monad scripted runner
+exitCode: 1
+signal: null
+error: RPC not ready at [redacted MONAD_RPC_URL]: fetch failed
+
+## Sanitized output
+
+```text
+[goal8] schema build: npm run schema:build
+
+> monad-agent-black-box@0.1.0 schema:build
+> npm --workspace @agent-black-box/trace-schema run build
+
+
+> @agent-black-box/trace-schema@0.1.0 build
+> tsc -p tsconfig.json
+
+[goal8] contracts build: npm run contracts:build
+
+> monad-agent-black-box@0.1.0 contracts:build
+> cd contracts && forge build
+
+No files changed, compilation skipped
+[goal8] Monad scripted runner: npm --workspace runner run demo:scripted
+
+> @agent-black-box/runner@0.1.0 demo:scripted
+> tsc -p tsconfig.json && node dist/demoScripted.js
+
+[runner] mode=scripted-monad-testnet session=0x31a391be17092e9eed03cf607a180f402c5b8d8a8af304f6971ae55903c7e902
+[runner] out=[repo]/runner/out
+[runner] scripted mode does not require any LLM API key
+[runner:FAILED] RPC not ready at [redacted MONAD_RPC_URL]: fetch failed
+npm error Lifecycle script `demo:scripted` failed with error:
+npm error code 1
+npm error path [repo]/runner
+npm error workspace @agent-black-box/runner@0.1.0
+npm error location [repo]/runner
+npm error command failed
+npm error command sh -c tsc -p tsconfig.json && node dist/demoScripted.js
+```

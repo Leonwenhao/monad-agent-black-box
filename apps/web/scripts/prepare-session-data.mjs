@@ -7,14 +7,14 @@ const appRoot = resolve(scriptDir, "..");
 const repoRoot = resolve(appRoot, "../..");
 const publicRoot = resolve(appRoot, "public");
 const latestRoot = resolve(publicRoot, "session-data");
+const monadRoot = resolve(publicRoot, "monad-testnet-session");
 const seededRoot = resolve(publicRoot, "seeded-session");
 const runnerOutRoot = resolve(repoRoot, "runner", "out");
 
 main();
 
 function main() {
-  const sourceRoot = hasUsableRunnerOutput() ? runnerOutRoot : seededRoot;
-  const sourceLabel = sourceRoot === runnerOutRoot ? "runner/out" : "seeded-session";
+  const { sourceRoot, sourceLabel } = selectSessionSource();
   const summary = readSummary(resolve(sourceRoot, "summary.json"));
 
   rmSync(latestRoot, { recursive: true, force: true });
@@ -31,14 +31,24 @@ function main() {
   process.stdout.write(`[web] prepared session-data from ${sourceLabel}\n`);
 }
 
-function hasUsableRunnerOutput() {
-  const summaryPath = resolve(runnerOutRoot, "summary.json");
+function selectSessionSource() {
+  if (hasUsableSessionRoot(runnerOutRoot)) {
+    return { sourceRoot: runnerOutRoot, sourceLabel: "runner/out" };
+  }
+  if (hasUsableSessionRoot(monadRoot)) {
+    return { sourceRoot: monadRoot, sourceLabel: "monad-testnet-session" };
+  }
+  return { sourceRoot: seededRoot, sourceLabel: "seeded-session" };
+}
+
+function hasUsableSessionRoot(root) {
+  const summaryPath = resolve(root, "summary.json");
   if (!existsSync(summaryPath)) return false;
 
   try {
     const summary = readSummary(summaryPath);
     return summary.traces.every((trace) =>
-      existsSync(resolve(runnerOutRoot, "traces", summary.sessionId, `${trace.step}.json`))
+      existsSync(resolve(root, "traces", summary.sessionId, `${trace.step}.json`))
     );
   } catch {
     return false;
@@ -52,6 +62,10 @@ function readSummary(path) {
 function publicSummary(summary) {
   return {
     ...summary,
+    chain: {
+      ...summary.chain,
+      rpcUrl: null
+    },
     outputs: {
       sessionDir: `public/session-data/traces/${summary.sessionId}`,
       summaryPath: "public/session-data/summary.json",

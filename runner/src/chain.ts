@@ -18,12 +18,35 @@ import type { ChainCommitment } from "./summary.js";
 
 const DEFAULT_ANVIL_PRIVATE_KEY =
   "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80" as const;
+const LOCAL_ANVIL_CHAIN_ID = 31337;
+export const MONAD_TESTNET_CHAIN_ID = 10143;
+
+export type ChainTarget = {
+  kind: "local" | "monad-testnet";
+  chainName: string;
+  expectedChainId?: number;
+  requireProvidedRpc: boolean;
+};
+
+export const LOCAL_CHAIN_TARGET: ChainTarget = {
+  kind: "local",
+  chainName: "Local Anvil",
+  requireProvidedRpc: false
+};
+
+export const MONAD_TESTNET_TARGET: ChainTarget = {
+  kind: "monad-testnet",
+  chainName: "Monad testnet",
+  expectedChainId: MONAD_TESTNET_CHAIN_ID,
+  requireProvidedRpc: true
+};
 
 export type LocalChainSessionArgs = {
   repoRoot: string;
   sessionId: `0x${string}`;
   createdAt: string;
   traceUriBase: string;
+  target?: ChainTarget;
 };
 
 export type LocalChainSessionResult = {
@@ -38,29 +61,38 @@ type Artifact = {
 
 type AnvilRuntime = {
   rpcUrl: string;
+  provided: boolean;
   stop: () => Promise<void>;
 };
 
 export async function runLocalChainSession(args: LocalChainSessionArgs): Promise<LocalChainSessionResult> {
-  const anvil = await getAnvilRuntime();
+  const target = args.target ?? LOCAL_CHAIN_TARGET;
+  const anvil = await getAnvilRuntime(target);
   try {
     const publicClient = createPublicClient({
       chain: defineChain({
-        id: 31337,
-        name: "Local Anvil",
+        id: target.expectedChainId ?? LOCAL_ANVIL_CHAIN_ID,
+        name: target.chainName,
         nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
         rpcUrls: { default: { http: [anvil.rpcUrl] } }
       }),
       transport: http(anvil.rpcUrl)
     });
     const chainId = await publicClient.getChainId();
+    assertExpectedChain(target, chainId);
     const chain = defineChain({
       id: chainId,
-      name: "Local Anvil",
+      name: chainNameFor(target, chainId),
       nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
       rpcUrls: { default: { http: [anvil.rpcUrl] } }
     });
-    const account = privateKeyToAccount(readPrivateKey());
+    const account = privateKeyToAccount(readPrivateKey({ chainId, rpcProvided: anvil.provided }));
+    await assertFundedAccount({
+      publicClient,
+      address: account.address,
+      chainId,
+      target
+    });
     const walletClient = createWalletClient({ account, chain, transport: http(anvil.rpcUrl) });
 
     const traceRegistryArtifact = readArtifact(args.repoRoot, "TraceRegistry.sol", "TraceRegistry");
@@ -201,7 +233,7 @@ export async function runLocalChainSession(args: LocalChainSessionArgs): Promise
         executionTxHash,
         calldataHash,
         submitted: true,
-        note: "local-chain deterministic run completed against Anvil-compatible RPC"
+        note: completionNoteFor(target, chainId)
       }
     };
   } finally {
@@ -209,12 +241,36 @@ export async function runLocalChainSession(args: LocalChainSessionArgs): Promise
   }
 }
 
-function readPrivateKey(): Hex {
-  const value = process.env.RUNNER_PRIVATE_KEY ?? DEFAULT_ANVIL_PRIVATE_KEY;
+function readPrivateKey(args: { chainId: number; rpcProvided: boolean }): Hex {
+  const configured = process.env.RUNNER_PRIVATE_KEY;
+  const value = configured === undefined || configured === "" ? DEFAULT_ANVIL_PRIVATE_KEY : configured;
+  if ((configured === undefined || configured === "") && (args.rpcProvided || args.chainId !== LOCAL_ANVIL_CHAIN_ID)) {
+    throw new Error(
+      `RUNNER_PRIVATE_KEY is required for non-local RPC chain ID ${args.chainId}; refusing to use the default Anvil private key`
+    );
+  }
   if (!/^0x[0-9a-fA-F]{64}$/.test(value)) {
     throw new Error("RUNNER_PRIVATE_KEY must be a 0x-prefixed 32-byte private key");
   }
+  if (args.chainId !== LOCAL_ANVIL_CHAIN_ID && value.toLowerCase() === DEFAULT_ANVIL_PRIVATE_KEY.toLowerCase()) {
+    throw new Error(`Refusing to use the default Anvil private key on non-local chain ID ${args.chainId}`);
+  }
   return value as Hex;
+}
+
+async function assertFundedAccount(args: {
+  publicClient: ReturnType<typeof createPublicClient>;
+  address: `0x${string}`;
+  chainId: number;
+  target: ChainTarget;
+}): Promise<void> {
+  if (args.target.kind === "local" && args.chainId === LOCAL_ANVIL_CHAIN_ID) return;
+  const balance = await args.publicClient.getBalance({ address: args.address });
+  if (balance === 0n) {
+    throw new Error(
+      `RUNNER_PRIVATE_KEY account has zero native-token balance on chain ID ${args.chainId}; fund it before deployment`
+    );
+  }
 }
 
 function readArtifact(repoRoot: string, sourceFile: string, contractName: string): Artifact {
@@ -230,11 +286,15 @@ function readArtifact(repoRoot: string, sourceFile: string, contractName: string
   return { abi: raw.abi, bytecode: bytecode as Hex };
 }
 
-async function getAnvilRuntime(): Promise<AnvilRuntime> {
-  const providedRpcUrl = process.env.RUNNER_RPC_URL ?? process.env.MONAD_RPC_URL;
+async function getAnvilRuntime(target: ChainTarget): Promise<AnvilRuntime> {
+  const providedRpcUrl = firstNonEmpty(process.env.RUNNER_RPC_URL, process.env.MONAD_RPC_URL);
   if (providedRpcUrl) {
     await waitForRpc(providedRpcUrl);
-    return { rpcUrl: providedRpcUrl, stop: async () => undefined };
+    return { rpcUrl: providedRpcUrl, provided: true, stop: async () => undefined };
+  }
+
+  if (target.requireProvidedRpc) {
+    throw new Error("MONAD_RPC_URL or RUNNER_RPC_URL is required for Monad testnet deployment");
   }
 
   const port = process.env.RUNNER_ANVIL_PORT ?? "8545";
@@ -259,7 +319,14 @@ async function getAnvilRuntime(): Promise<AnvilRuntime> {
     throw err;
   }
 
-  return { rpcUrl, stop: () => stopChild(child) };
+  return { rpcUrl, provided: false, stop: () => stopChild(child) };
+}
+
+function firstNonEmpty(...values: Array<string | undefined>): string | undefined {
+  for (const value of values) {
+    if (value !== undefined && value.trim() !== "") return value.trim();
+  }
+  return undefined;
 }
 
 async function waitForRpc(rpcUrl: string, tick?: () => void): Promise<void> {
@@ -302,4 +369,25 @@ function severityFor(eventType: string): number {
   if (eventType === "risk.rejection") return 2;
   if (eventType === "tool.simulation") return 1;
   return 0;
+}
+
+function assertExpectedChain(target: ChainTarget, chainId: number): void {
+  if (target.expectedChainId !== undefined && chainId !== target.expectedChainId) {
+    throw new Error(
+      `RPC chain ID ${chainId} does not match expected ${target.expectedChainId} for ${target.chainName}; refusing to submit transactions`
+    );
+  }
+}
+
+function chainNameFor(target: ChainTarget, chainId: number): string {
+  if (target.kind === "monad-testnet" && chainId === MONAD_TESTNET_CHAIN_ID) return "Monad testnet";
+  if (chainId === LOCAL_ANVIL_CHAIN_ID) return "Local Anvil";
+  return target.chainName;
+}
+
+function completionNoteFor(target: ChainTarget, chainId: number): string {
+  if (target.kind === "monad-testnet") {
+    return `Monad testnet deterministic run completed on chain ID ${chainId}`;
+  }
+  return "local-chain deterministic run completed against Anvil-compatible RPC";
 }

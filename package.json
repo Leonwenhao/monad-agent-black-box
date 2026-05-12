@@ -13,6 +13,7 @@
     "schema:test": "npm --workspace @agent-black-box/trace-schema test",
     "contracts:build": "cd contracts && forge build",
     "runner:demo": "npm run schema:build && npm run contracts:build && npm --workspace runner run demo:scripted && npm run web:prepare-session",
+    "runner:demo:monad": "node scripts/run-monad-demo.mjs",
     "web:prepare-session": "npm --workspace apps/web run prepare:session",
     "web:dev": "npm --workspace apps/web run dev",
     "web:build": "npm run schema:build && npm --workspace apps/web run build"

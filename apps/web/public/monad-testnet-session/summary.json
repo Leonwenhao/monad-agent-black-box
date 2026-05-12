@@ -1,0 +1,142 @@
+{
+  "mode": "scripted-onchain",
+  "runner": {
+    "name": "@agent-black-box/runner",
+    "version": "0.1.0"
+  },
+  "sessionId": "0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602",
+  "createdAt": "2026-05-12T06:18:29.908Z",
+  "eventCount": 8,
+  "traces": [
+    {
+      "step": 1,
+      "eventType": "goal.received",
+      "contentHash": "0xf4525e8830947ecf392738f63163475ca5d0f1e98c131e03c60d3552c5699cbf",
+      "uri": "local://traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602/1.json",
+      "role": "user"
+    },
+    {
+      "step": 2,
+      "eventType": "plan.created",
+      "contentHash": "0x30a35d23e975b89205b8bd66f0eb260c303103cefc064227b0afd9537d1139a5",
+      "uri": "local://traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602/2.json",
+      "role": "planner"
+    },
+    {
+      "step": 3,
+      "eventType": "tool.simulation",
+      "contentHash": "0xc0a33d13e86185d873e455d2973b9a7e90d92674792954822e182232ed6331eb",
+      "uri": "local://traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602/3.json",
+      "role": "executor"
+    },
+    {
+      "step": 4,
+      "eventType": "risk.rejection",
+      "contentHash": "0xad676cd6c22f41073a05d88fd7530e82efe5cea1fc0f70dfe26bd263eff2bfcd",
+      "uri": "local://traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602/4.json",
+      "role": "risk-agent"
+    },
+    {
+      "step": 5,
+      "eventType": "policy.approved",
+      "contentHash": "0xf852ca46303901ac27ae76ac322c8d8df18b9ed1b4c0fca5a35751615031d77a",
+      "uri": "local://traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602/5.json",
+      "role": "policy-agent"
+    },
+    {
+      "step": 6,
+      "eventType": "execution.submitted",
+      "contentHash": "0x63f66fe466325997257990c4fe8918999e82186f2f39f54516e851e0acf07ecf",
+      "uri": "local://traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602/6.json",
+      "role": "executor"
+    },
+    {
+      "step": 7,
+      "eventType": "execution.confirmed",
+      "contentHash": "0x94fc4c2592e6d0309b3f98336dfbc9c2d9262c010f7d0773a408a11da63b57cf",
+      "uri": "local://traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602/7.json",
+      "role": "executor"
+    },
+    {
+      "step": 8,
+      "eventType": "session.summary",
+      "contentHash": "0x161e5bad0a85aa55037e8cfa1825a4c823dbcb42dbfb0d78585ca10901bde25d",
+      "uri": "local://traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602/8.json",
+      "role": "system"
+    }
+  ],
+  "chain": {
+    "registryAddress": "0x8cac8a133c703a9048adfd7ef6cbf878efa4ed38",
+    "demoTreasuryAddress": "0x4197dde02b9531495d3cc83dbea2d2156c557fe7",
+    "rpcUrl": null,
+    "ownerAddress": "0xe0a1462782d51515276D90eF6b11007DB308a6d6",
+    "chainId": 10143,
+    "deploymentTxHashes": {
+      "traceRegistry": "0x976caf53e25d198fc74d9e701dd81cde1c1ee7907048b16f93c3fd6fc6721105",
+      "demoTreasuryAction": "0xa41cb5deeab2e71f852aa04bea51dc45de950dc90e3df75c5dcb32254b30526b"
+    },
+    "sessionTxHash": "0xd8916cc39d5f91d91c4df7b540f3dda0aeec072317b31c065d62c312b4647508",
+    "traceRecordTxHashes": [
+      {
+        "step": 1,
+        "eventType": "goal.received",
+        "txHash": "0x8f0b08ae55465cbb795456ad9c41e89ebc83c3b7be739d70ff964ad404eb3e7e"
+      },
+      {
+        "step": 2,
+        "eventType": "plan.created",
+        "txHash": "0x95d059c358ac11bc2712a04adfbe7dd15bfca2bc222c1eb2847c64ca529afb0e"
+      },
+      {
+        "step": 3,
+        "eventType": "tool.simulation",
+        "txHash": "0xf0b94278b464aa4026b8fd9aea1bcc387123277b9fe0cf996bcba4dc094afa92"
+      },
+      {
+        "step": 4,
+        "eventType": "risk.rejection",
+        "txHash": "0x52bdd33d613a9fa403a282fa7f149c87a1e4a460c6967df4bcb1882da1a9b5df"
+      },
+      {
+        "step": 5,
+        "eventType": "policy.approved",
+        "txHash": "0x82db62ad4ec34c7b39f1a5a4aa1d8467c3fe1aaea6cc136f1d64ca2c38c7044d"
+      },
+      {
+        "step": 6,
+        "eventType": "execution.submitted",
+        "txHash": "0x440e5937fcae8c7cdc4d5bfd99441b7439d7e0f4cb03b1f67c8c7e9bb7d2ada9"
+      },
+      {
+        "step": 7,
+        "eventType": "execution.confirmed",
+        "txHash": "0x8937b6b83faacca944fbe49d53e40a7155d62d9499bab2d0415b6651f3b900ba"
+      },
+      {
+        "step": 8,
+        "eventType": "session.summary",
+        "txHash": "0x06d2a7f914a976dc1acb2089f0838d6b8cfbffa25b35697bcbf60a52db38f8cc"
+      }
+    ],
+    "linkExecutionTxHash": "0xbd278987c0b37921f8e6363b80b02ab72d052c5908defcfaef8dc67d6fc27153",
+    "closeSessionTxHash": "0x5f13c9aa1d1487c359fe6798a51bfd45df893f691f16cd830e348707361f5151",
+    "executionTxHash": "0xae057ea7934064be906414ab5c1abd3630adf057343a48278c0a4354cb893374",
+    "calldataHash": "0x16bd0378ff49a816ea911497ab48060f1d3f098cddfb3d14ed6e40cb4764cd2f",
+    "submitted": true,
+    "note": "Monad testnet deterministic run completed on chain ID 10143"
+  },
+  "outputs": {
+    "sessionDir": "public/session-data/traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602",
+    "summaryPath": "public/session-data/summary.json",
+    "tracePaths": [
+      "public/session-data/traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602/1.json",
+      "public/session-data/traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602/2.json",
+      "public/session-data/traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602/3.json",
+      "public/session-data/traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602/4.json",
+      "public/session-data/traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602/5.json",
+      "public/session-data/traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602/6.json",
+      "public/session-data/traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602/7.json",
+      "public/session-data/traces/0x84977d7b9a44a67f3feaef0373c12c67c3f5dfae46aaca18a2efde293a6a3602/8.json"
+    ]
+  }
+}
