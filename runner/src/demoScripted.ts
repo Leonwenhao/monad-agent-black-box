@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { keccak256, toBytes } from "viem";
-import { MONAD_TESTNET_CHAIN_ID, MONAD_TESTNET_TARGET, runLocalChainSession, type ChainTarget } from "./chain.js";
+import { MONAD_MAINNET_CHAIN_ID, MONAD_MAINNET_TARGET, runLocalChainSession, type ChainTarget } from "./chain.js";
 import { fail, info, ok, step, warn } from "./log.js";
 import { buildScenario } from "./scenario.js";
 import { writeTraceSession } from "./traceStore.js";
@@ -11,7 +11,7 @@ import { buildSummary, writeSummary, type ChainCommitment, type RunnerSummary } 
 const runnerRoot = resolve(fileURLToPath(import.meta.url), "../..");
 const repoRoot = resolve(runnerRoot, "..");
 const runnerTargetName = process.env.RUNNER_TARGET ?? "local";
-if (runnerTargetName === "monad-testnet") {
+if (isMonadRunnerTarget(runnerTargetName)) {
   loadDotEnv(resolve(repoRoot, ".env"));
 }
 
@@ -32,8 +32,8 @@ async function main(): Promise<void> {
     : resolve(runnerRoot, "out");
   const traceUriBase = process.env.RUNNER_TRACE_URI_BASE ?? `local://traces/${sessionId}`;
   const offline = process.env.RUNNER_OFFLINE === "1";
-  if (offline && target.kind === "monad-testnet") {
-    throw new Error("RUNNER_OFFLINE=1 cannot be used with RUNNER_TARGET=monad-testnet");
+  if (offline && target.kind === "monad-mainnet") {
+    throw new Error("RUNNER_OFFLINE=1 cannot be used with a Monad deployment target");
   }
 
   info(`mode=${offline ? "scripted-offline" : `scripted-${target.kind}`} session=${sessionId}`);
@@ -67,7 +67,7 @@ async function main(): Promise<void> {
   });
   writeSummary(summary);
   ok(`summary written to ${summaryPath}`);
-  if (target.kind === "monad-testnet" && summary.chain.chainId === MONAD_TESTNET_CHAIN_ID && summary.chain.submitted) {
+  if (target.kind === "monad-mainnet" && summary.chain.chainId === MONAD_MAINNET_CHAIN_ID && summary.chain.submitted) {
     writeMonadDeploymentEvidence(summary);
   }
 
@@ -76,12 +76,14 @@ async function main(): Promise<void> {
 
 function readRunnerTarget(): ChainTarget {
   if (runnerTargetName === "local") return { kind: "local", chainName: "Local Anvil", requireProvidedRpc: false };
-  if (runnerTargetName === "monad-testnet") return MONAD_TESTNET_TARGET;
-  throw new Error(`RUNNER_TARGET must be "local" or "monad-testnet" (got: ${runnerTargetName})`);
+  if (runnerTargetName === "monad" || runnerTargetName === "monad-mainnet") {
+    return MONAD_MAINNET_TARGET;
+  }
+  throw new Error(`RUNNER_TARGET must be "local", "monad", or "monad-mainnet" (got: ${runnerTargetName})`);
 }
 
 function validateTargetConfig(target: ChainTarget): void {
-  if (target.kind !== "monad-testnet") return;
+  if (target.kind !== "monad-mainnet") return;
   const missing: string[] = [];
   if (!hasEnv("MONAD_RPC_URL") && !hasEnv("RUNNER_RPC_URL")) {
     missing.push("MONAD_RPC_URL or RUNNER_RPC_URL");
@@ -172,12 +174,12 @@ function writeMonadDeploymentEvidence(summary: RunnerSummary): void {
   const explorerBase = (
     process.env.MONAD_EXPLORER_BASE_URL
     ?? process.env.VITE_MONAD_EXPLORER_BASE_URL
-    ?? "https://testnet.monadexplorer.com"
+    ?? "https://monadvision.com"
   ).replace(/\/+$/, "");
-  const deploymentDir = resolve(repoRoot, "deployments", "monad-testnet");
+  const deploymentDir = resolve(repoRoot, "deployments", "monad-mainnet");
   mkdirSync(deploymentDir, { recursive: true });
   const evidence = {
-    network: "Monad testnet",
+    network: "Monad mainnet",
     chainId: summary.chain.chainId,
     runTimestamp: summary.createdAt,
     command: "npm run runner:demo:monad",
@@ -213,14 +215,14 @@ function writeMonadDeploymentEvidence(summary: RunnerSummary): void {
     },
     frontendBuildInput: {
       latestSessionPath: "apps/web/public/session-data",
-      committedMonadSessionPath: "apps/web/public/monad-testnet-session",
+      committedMonadSessionPath: "apps/web/public/monad-mainnet-session",
       seededFallbackPath: "apps/web/public/seeded-session",
-      note: "npm run runner:demo:monad refreshes runner/out, then npm run web:prepare-session copies the latest public session without deleting the committed Monad session or seeded fallback."
+      note: "npm run runner:demo:monad refreshes runner/out, then npm run web:prepare-session copies the latest public session without deleting the committed Monad mainnet session or seeded fallback."
     }
   };
   writeFileSync(resolve(deploymentDir, "latest.json"), `${JSON.stringify(evidence, null, 2)}\n`, "utf8");
   writeFileSync(resolve(repoRoot, "docs", "DEPLOYMENTS.md"), deploymentMarkdown(evidence), "utf8");
-  ok("Monad deployment evidence written to deployments/monad-testnet/latest.json and docs/DEPLOYMENTS.md");
+  ok("Monad deployment evidence written to deployments/monad-mainnet/latest.json and docs/DEPLOYMENTS.md");
 }
 
 function txEntry(explorerBase: string, txHash: string | null): { txHash: string | null; explorerUrl: string | null } {
@@ -239,7 +241,7 @@ function deploymentMarkdown(evidence: ReturnType<typeof buildDeploymentEvidenceS
   const demoTreasury = evidence.contracts.demoTreasuryAction;
   return `# Deployments
 
-## Monad Testnet
+## Monad Mainnet
 
 - Network: ${evidence.network}
 - Chain ID: ${evidence.chainId}
@@ -255,7 +257,7 @@ function deploymentMarkdown(evidence: ReturnType<typeof buildDeploymentEvidenceS
 - Link execution tx: ${markdownLink(evidence.transactions.linkExecution.txHash, evidence.transactions.linkExecution.explorerUrl)}
 - Close session tx: ${markdownLink(evidence.transactions.closeSession.txHash, evidence.transactions.closeSession.explorerUrl)}
 
-Latest machine-readable evidence: [deployments/monad-testnet/latest.json](../deployments/monad-testnet/latest.json)
+Latest machine-readable evidence: [deployments/monad-mainnet/latest.json](../deployments/monad-mainnet/latest.json)
 
 Frontend build input:
 
@@ -306,7 +308,7 @@ function markdownLink(label: string | null, href: string | null): string {
 }
 
 function writeGoal8FailureLog(message: string): void {
-  if (runnerTargetName !== "monad-testnet") return;
+  if (!isMonadRunnerTarget(runnerTargetName)) return;
   const logPath = resolve(repoRoot, "docs", "dev", "test_logs", "goal8-monad-deploy.log");
   mkdirSync(dirname(logPath), { recursive: true });
   const body = [
@@ -318,6 +320,10 @@ function writeGoal8FailureLog(message: string): void {
     ""
   ].join("\n");
   writeFileSync(logPath, body, "utf8");
+}
+
+function isMonadRunnerTarget(targetName: string): boolean {
+  return targetName === "monad" || targetName === "monad-mainnet";
 }
 
 function sanitizeSecretValues(value: string): string {

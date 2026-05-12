@@ -12,7 +12,7 @@ loadDotEnv(resolve(repoRoot, ".env"));
 
 const childEnv = {
   ...process.env,
-  RUNNER_TARGET: "monad-testnet"
+  RUNNER_TARGET: "monad-mainnet"
 };
 
 const steps = [

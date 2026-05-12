@@ -14,6 +14,7 @@
     "contracts:build": "cd contracts && forge build",
     "runner:demo": "npm run schema:build && npm run contracts:build && npm --workspace runner run demo:scripted && npm run web:prepare-session",
     "runner:demo:monad": "node scripts/run-monad-demo.mjs",
+    "web:scrape-8004scan-catalog": "npm --workspace apps/web run scrape:8004scan-catalog",
     "web:prepare-session": "npm --workspace apps/web run prepare:session",
     "web:dev": "npm --workspace apps/web run dev",
     "web:build": "npm run schema:build && npm --workspace apps/web run build"

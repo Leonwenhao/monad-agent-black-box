@@ -440,6 +440,291 @@ a {
   display: inline-block;
 }
 
+/* ─── simplified risk radar ─── */
+.simple-grid {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(360px, 440px);
+  gap: 0;
+  min-height: 0;
+}
+
+.simple-panel {
+  min-width: 0;
+  min-height: 0;
+  border-right: 1px solid var(--bd-1);
+  background: linear-gradient(180deg, var(--bg-1), rgba(10, 11, 14, 0.45));
+  overflow: auto;
+}
+
+.simple-panel:last-child {
+  border-right: 0;
+}
+
+.simple-hero {
+  padding: 28px 28px 20px;
+  border-bottom: 1px solid var(--bd-1);
+}
+
+.simple-hero h1 {
+  margin: 12px 0 8px;
+  font-size: clamp(28px, 4vw, 48px);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+}
+
+.simple-hero p {
+  max-width: 720px;
+  margin: 0;
+  color: var(--fg-2);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.radar-source {
+  margin: 18px 28px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--bd-1);
+  border-radius: var(--radius-lg);
+  background: var(--bg-2);
+}
+
+.radar-source div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.radar-source-k {
+  color: var(--fg-3);
+  font-family: "Geist Mono", monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.radar-counts {
+  margin: 0 28px 18px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.radar-count {
+  padding: 13px 14px;
+  border: 1px solid var(--bd-1);
+  border-radius: var(--radius);
+  background: var(--bg-2);
+}
+
+.radar-count span {
+  display: block;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.radar-count label {
+  display: block;
+  margin-top: 2px;
+  color: var(--fg-3);
+  font-family: "Geist Mono", monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.radar-count-ok span {
+  color: var(--ok);
+}
+
+.radar-count-warn span {
+  color: var(--warn);
+}
+
+.radar-count-reject span {
+  color: var(--rej);
+}
+
+.radar-list {
+  margin: 0 28px;
+  display: grid;
+  gap: 10px;
+}
+
+.risk-row {
+  border: 1px solid var(--bd-1);
+  border-radius: var(--radius-lg);
+  background: var(--bg-2);
+  padding: 14px;
+}
+
+.risk-row-verified {
+  border-color: var(--ok-bd);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--ok) 5%, transparent), var(--bg-2));
+}
+
+.risk-row-offline {
+  border-color: var(--rej-bd);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--rej) 5%, transparent), var(--bg-2));
+}
+
+.risk-row-needs-review {
+  border-color: var(--warn-bd);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--warn) 5%, transparent), var(--bg-2));
+}
+
+.risk-row-main {
+  display: grid;
+  grid-template-columns: 62px 1fr;
+  gap: 14px;
+}
+
+.risk-score {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 1px solid var(--bd-2);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  background: var(--bg-1);
+}
+
+.risk-score span {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.risk-score label {
+  color: var(--fg-3);
+  font-family: "Geist Mono", monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.risk-agent-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.risk-agent-top strong {
+  font-size: 15px;
+}
+
+.risk-agent p {
+  margin: 6px 0 8px;
+  color: var(--fg-2);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.risk-meta,
+.risk-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.risk-meta span,
+.risk-badges span {
+  padding: 2px 6px;
+  border: 1px solid var(--bd-1);
+  border-radius: 3px;
+  color: var(--fg-2);
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 10.5px;
+}
+
+.risk-badges {
+  margin-top: 12px;
+}
+
+.radar-note {
+  margin: 18px 28px 28px;
+  color: var(--fg-3);
+  font-family: "Geist Mono", monospace;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.trace-panel-simple {
+  padding-bottom: 20px;
+}
+
+.simple-panel-hd {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 18px 14px;
+  border-bottom: 1px solid var(--bd-1);
+}
+
+.simple-panel-hd span {
+  color: var(--fg-3);
+  font-family: "Geist Mono", monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.simple-panel-hd h2 {
+  margin: 4px 0 0;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+
+.trace-steps-simple {
+  padding: 12px 18px 6px;
+  display: grid;
+  gap: 8px;
+}
+
+.trace-step-simple {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--bd-1);
+  border-radius: var(--radius);
+  background: var(--bg-2);
+}
+
+.trace-step-simple > .mono {
+  color: var(--fg-3);
+  font-size: 10.5px;
+}
+
+.trace-step-simple strong {
+  display: block;
+  color: var(--fg-0);
+  font-size: 12px;
+}
+
+.trace-step-simple p {
+  margin: 3px 0 0;
+  color: var(--fg-2);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+.simple-proof {
+  margin: 12px 18px 0;
+  border: 1px solid var(--bd-1);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
 /* ─── agent panel ─── */
 .agent-panel {
   background: linear-gradient(180deg, var(--bg-1), rgba(10, 11, 14, 0.4));
@@ -1495,6 +1780,16 @@ button.proof-copy-btn:hover {
 }
 
 @media (max-width: 940px) {
+  .simple-grid {
+    grid-template-columns: 1fr;
+  }
+  .simple-panel {
+    border-right: 0;
+    border-bottom: 1px solid var(--bd-1);
+  }
+  .radar-counts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .grid {
     grid-template-columns: 1fr;
   }

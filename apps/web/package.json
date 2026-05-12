@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "scrape:8004scan-catalog": "node ./scripts/scrape-8004scan-agents.mjs",
     "prepare:session": "node ./scripts/prepare-session-data.mjs",
     "dev": "npm run prepare:session && vite --host 127.0.0.1",
     "build": "npm run prepare:session && tsc -b && vite build",

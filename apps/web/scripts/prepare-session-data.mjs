@@ -7,7 +7,7 @@ const appRoot = resolve(scriptDir, "..");
 const repoRoot = resolve(appRoot, "../..");
 const publicRoot = resolve(appRoot, "public");
 const latestRoot = resolve(publicRoot, "session-data");
-const monadRoot = resolve(publicRoot, "monad-testnet-session");
+const monadRoot = resolve(publicRoot, "monad-mainnet-session");
 const seededRoot = resolve(publicRoot, "seeded-session");
 const runnerOutRoot = resolve(repoRoot, "runner", "out");
 
@@ -36,7 +36,7 @@ function selectSessionSource() {
     return { sourceRoot: runnerOutRoot, sourceLabel: "runner/out" };
   }
   if (hasUsableSessionRoot(monadRoot)) {
-    return { sourceRoot: monadRoot, sourceLabel: "monad-testnet-session" };
+    return { sourceRoot: monadRoot, sourceLabel: "monad-mainnet-session" };
   }
   return { sourceRoot: seededRoot, sourceLabel: "seeded-session" };
 }
