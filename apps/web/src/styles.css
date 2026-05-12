@@ -363,6 +363,22 @@ a {
   min-height: 0;
 }
 
+.rail {
+  border-right: 1px solid var(--bd-1);
+  display: grid;
+  grid-template-rows: minmax(280px, 0.92fr) minmax(300px, 1fr);
+  min-width: 0;
+  min-height: 0;
+}
+
+.rail .panel {
+  border-right: 0;
+}
+
+.rail .panel:first-child {
+  border-bottom: 1px solid var(--bd-1);
+}
+
 .panel {
   border-right: 1px solid var(--bd-1);
   background: linear-gradient(180deg, var(--bg-1), rgba(16, 18, 22, 0.6));
@@ -422,6 +438,183 @@ a {
   height: 10px;
   background: var(--bd-2);
   display: inline-block;
+}
+
+/* ─── agent panel ─── */
+.agent-panel {
+  background: linear-gradient(180deg, var(--bg-1), rgba(10, 11, 14, 0.4));
+  overflow-y: auto;
+}
+
+.agent-card {
+  margin: 12px 16px 14px;
+  border: 1px solid var(--purple-bd);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--purple) 7%, transparent), transparent 72%),
+    var(--bg-2);
+  overflow: hidden;
+}
+
+.agent-card-top {
+  padding: 12px 12px 10px;
+  border-bottom: 1px solid var(--bd-1);
+}
+
+.agent-name {
+  margin: 0;
+  color: var(--fg-0);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.agent-desc {
+  margin: 5px 0 0;
+  color: var(--fg-2);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.agent-grid {
+  display: grid;
+}
+
+.agent-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  align-items: center;
+  min-height: 29px;
+  padding: 6px 11px;
+  border-bottom: 1px solid var(--bd-1);
+  gap: 8px;
+}
+
+.agent-k {
+  font-family: "Geist Mono", monospace;
+  font-size: 10px;
+  color: var(--fg-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.agent-v {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  color: var(--fg-1);
+}
+
+.agent-v .mono,
+.agent-v code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agent-links {
+  display: grid;
+  gap: 6px;
+  padding: 10px 11px 11px;
+}
+
+.agent-links .proof-link {
+  margin: 0;
+  padding: 7px 9px;
+}
+
+.agent-section {
+  margin: 0 16px 14px;
+  padding: 11px 12px 12px;
+  border: 1px solid var(--bd-1);
+  border-radius: var(--radius);
+  background: var(--bg-2);
+}
+
+.agent-section-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 9px;
+  color: var(--fg-1);
+  font-size: 11px;
+  font-family: "Geist Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.agent-section-hd .mono {
+  color: var(--fg-3);
+  font-size: 10.5px;
+  text-transform: none;
+}
+
+.agent-endpoints,
+.evidence-list {
+  display: grid;
+  gap: 7px;
+}
+
+.agent-endpoint {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 8px;
+  padding: 8px 9px;
+  border: 1px solid var(--bd-1);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.agent-endpoint span:not(.pill) {
+  display: block;
+  color: var(--fg-1);
+  font-size: 12px;
+}
+
+.agent-endpoint code {
+  display: block;
+  margin-top: 2px;
+  color: var(--fg-3);
+  font-family: "Geist Mono", monospace;
+  font-size: 10.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.evidence-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--fg-1);
+  font-size: 11.5px;
+  font-family: "Geist Mono", monospace;
+}
+
+.evidence-item span {
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  font-size: 10px;
+}
+
+.evidence-ok {
+  color: var(--ok);
+}
+
+.evidence-wait {
+  color: var(--fg-3);
+}
+
+.agent-note {
+  margin: 10px 0 0;
+  color: var(--fg-3);
+  font-size: 11px;
+  line-height: 1.5;
 }
 
 /* ─── timeline ─── */
@@ -1304,6 +1497,11 @@ button.proof-copy-btn:hover {
 @media (max-width: 940px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+  .rail {
+    border-right: 0;
+    border-bottom: 1px solid var(--bd-1);
+    grid-template-rows: auto auto;
   }
   .panel {
     border-right: 0;

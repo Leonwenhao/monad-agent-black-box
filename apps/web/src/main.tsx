@@ -14,6 +14,25 @@ type Severity = "info" | "warn" | "critical" | "ok";
 type SessionSource = "latest" | "seeded";
 type DemoState = "confirmed" | "replayed" | "offline";
 
+type AgentEndpoint = {
+  type: "mcp" | "http" | "x402" | "a2a";
+  label: string;
+  uri: string;
+};
+
+type AgentIdentity = {
+  standard: "ERC-8004";
+  agentId: string;
+  name: string;
+  description: string;
+  identityRegistry: string;
+  reputationRegistry: string;
+  agentWallet: string | null;
+  agentCardUri: string;
+  endpoints: AgentEndpoint[];
+  trustModels: string[];
+};
+
 type RunnerSummary = {
   mode: "scripted-offline" | "scripted-onchain";
   runner: { name: string; version: string };
@@ -27,6 +46,7 @@ type RunnerSummary = {
     uri: string;
     role: string;
   }>;
+  agentIdentity?: AgentIdentity;
   chain: {
     registryAddress: string | null;
     demoTreasuryAddress: string | null;
@@ -232,7 +252,10 @@ function App() {
         onActivateSource={activateSource}
       />
       <main className="grid">
-        <RiskDebate session={activeSession} />
+        <aside className="rail">
+          <AgentContext session={activeSession} allHashesMatch={allHashesMatch} />
+          <RiskDebate session={activeSession} />
+        </aside>
         <Timeline
           session={activeSession}
           selectedStep={selected.trace.step}
@@ -252,6 +275,136 @@ function App() {
         hashMatches={selectedHashMatches}
         onClose={() => setDrawerOpen(false)}
       />
+    </div>
+  );
+}
+
+function AgentContext({
+  session,
+  allHashesMatch
+}: {
+  session: LoadedSession;
+  allHashesMatch: boolean;
+}) {
+  const identity = agentIdentityFor(session.summary);
+  const chain = session.summary.chain;
+  const wallet = identity.agentWallet ?? chain.ownerAddress;
+  const walletHref = session.explorerBase && wallet ? `${session.explorerBase}/address/${wallet}` : null;
+  const txHref = session.explorerBase && chain.executionTxHash ? `${session.explorerBase}/tx/${chain.executionTxHash}` : null;
+  const reputationHref = session.explorerBase
+    ? `${session.explorerBase}/address/${identity.reputationRegistry}`
+    : null;
+
+  const evidence = [
+    { label: "unsafe path rejected", ok: Boolean(session.traces.find((t) => t.trace.eventType === "risk.rejection")) },
+    { label: "safe action executed", ok: Boolean(chain.executionTxHash && chain.submitted) },
+    { label: "trace hashes verified", ok: allHashesMatch },
+    { label: "reputation evidence ready", ok: allHashesMatch && Boolean(chain.executionTxHash) }
+  ];
+
+  return (
+    <section className="panel agent-panel">
+      <div className="panel-hd">
+        <div className="panel-hd-l">
+          <span className="panel-eyebrow">01 ·</span>
+          <h3 className="panel-title">Agent context</h3>
+        </div>
+        <Pill tone="purple" square>
+          {identity.standard}
+        </Pill>
+      </div>
+
+      <div className="agent-card">
+        <div className="agent-card-top">
+          <div>
+            <p className="agent-name">{identity.name}</p>
+            <p className="agent-desc">{identity.description}</p>
+          </div>
+        </div>
+
+        <div className="agent-grid">
+          <AgentRow k="agent id">
+            <span className="mono">{identity.agentId}</span>
+          </AgentRow>
+          <AgentRow k="wallet">
+            {wallet ? (
+              <Mono copy={wallet} title={wallet}>
+                {shortHash(wallet, 10, 8)}
+              </Mono>
+            ) : (
+              <span className="dim mono">not set</span>
+            )}
+          </AgentRow>
+          <AgentRow k="identity">
+            <Mono copy={identity.identityRegistry} title={identity.identityRegistry}>
+              {shortHash(identity.identityRegistry, 10, 8)}
+            </Mono>
+          </AgentRow>
+          <AgentRow k="agent card">
+            <span className="mono">{identity.agentCardUri}</span>
+          </AgentRow>
+        </div>
+
+        <div className="agent-links">
+          <ProofLink href={walletHref} label="explorer · agent wallet" />
+          <ProofLink href={txHref} label="explorer · traced action" />
+          <ProofLink href={reputationHref} label="explorer · reputation registry" />
+        </div>
+      </div>
+
+      <div className="agent-section">
+        <div className="agent-section-hd">
+          <span>integration slots</span>
+          <span className="mono">MCP / x402</span>
+        </div>
+        <div className="agent-endpoints">
+          {identity.endpoints.map((endpoint) => (
+            <div className="agent-endpoint" key={`${endpoint.type}-${endpoint.uri}`}>
+              <Pill tone={endpoint.type === "x402" ? "warn" : "purple"} square>
+                {endpoint.type}
+              </Pill>
+              <div>
+                <span>{endpoint.label}</span>
+                <code>{endpoint.uri}</code>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="agent-section">
+        <div className="agent-section-hd">
+          <span>reputation evidence</span>
+          <span className="mono">{session.summary.eventCount} events</span>
+        </div>
+        <div className="evidence-list">
+          {evidence.map((item) => (
+            <span className={`evidence-item ${item.ok ? "evidence-ok" : "evidence-wait"}`} key={item.label}>
+              <span>{item.ok ? "✓" : "·"}</span>
+              {item.label}
+            </span>
+          ))}
+        </div>
+        <p className="agent-note">
+          MonadScan or Goldsky can supply broader wallet history later. This session remains the verified
+          decision trace behind one agent action.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function AgentRow({
+  k,
+  children
+}: {
+  k: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="agent-row">
+      <span className="agent-k">{k}</span>
+      <span className="agent-v">{children}</span>
     </div>
   );
 }
@@ -996,6 +1149,32 @@ function chainLabelFor(summary: RunnerSummary): string {
   if (summary.chain.chainId === 31337) return "Local Anvil";
   if (summary.chain.chainId !== null) return `Chain ${summary.chain.chainId}`;
   return "Offline replay";
+}
+
+function agentIdentityFor(summary: RunnerSummary): AgentIdentity {
+  return summary.agentIdentity ?? {
+    standard: "ERC-8004",
+    agentId: "demo-treasury-agent",
+    name: "Demo Treasury Agent",
+    description: "Scripted treasury agent used to prove replayable decision traces for on-chain actions.",
+    identityRegistry: "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+    reputationRegistry: "0x8004BAa17C55a88189AE136b182e5fdA19dE9b63",
+    agentWallet: summary.chain.ownerAddress,
+    agentCardUri: "local://agent-cards/demo-treasury-agent.json",
+    endpoints: [
+      {
+        type: "mcp",
+        label: "Trace recorder MCP",
+        uri: "mcp://agent-black-box/start_trace_session"
+      },
+      {
+        type: "x402",
+        label: "Paid verification report",
+        uri: "/api/verify/demo-treasury-agent"
+      }
+    ],
+    trustModels: ["trace-session-proof", "human-readable-json", "onchain-content-hash"]
+  };
 }
 
 function proofCopyFor(summary: RunnerSummary): string {

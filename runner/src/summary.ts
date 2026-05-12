@@ -2,6 +2,25 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import type { TraceEntry } from "@agent-black-box/trace-schema";
 
+export type AgentEndpoint = {
+  type: "mcp" | "http" | "x402" | "a2a";
+  label: string;
+  uri: string;
+};
+
+export type AgentIdentity = {
+  standard: "ERC-8004";
+  agentId: string;
+  name: string;
+  description: string;
+  identityRegistry: string;
+  reputationRegistry: string;
+  agentWallet: string | null;
+  agentCardUri: string;
+  endpoints: AgentEndpoint[];
+  trustModels: string[];
+};
+
 export type ChainCommitment = {
   registryAddress: string | null;
   demoTreasuryAddress: string | null;
@@ -29,6 +48,7 @@ export type RunnerSummary = {
   createdAt: string;
   eventCount: number;
   traces: Array<{ step: number; eventType: string; contentHash: string; uri: string; role: string }>;
+  agentIdentity: AgentIdentity;
   chain: ChainCommitment;
   outputs: { sessionDir: string; summaryPath: string; tracePaths: string[] };
 };
@@ -56,6 +76,7 @@ export function buildSummary(args: {
       uri: t.uri,
       role: t.role
     })),
+    agentIdentity: buildAgentIdentity(args.chain.ownerAddress),
     chain: args.chain,
     outputs: {
       sessionDir: args.sessionDir,
@@ -68,4 +89,30 @@ export function buildSummary(args: {
 export function writeSummary(summary: RunnerSummary): void {
   mkdirSync(dirname(summary.outputs.summaryPath), { recursive: true });
   writeFileSync(summary.outputs.summaryPath, `${JSON.stringify(summary, null, 2)}\n`, "utf8");
+}
+
+function buildAgentIdentity(agentWallet: string | null): AgentIdentity {
+  return {
+    standard: "ERC-8004",
+    agentId: "demo-treasury-agent",
+    name: "Demo Treasury Agent",
+    description: "Scripted treasury agent used to prove that every major autonomous decision has a replayable trace.",
+    identityRegistry: "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+    reputationRegistry: "0x8004BAa17C55a88189AE136b182e5fdA19dE9b63",
+    agentWallet,
+    agentCardUri: "local://agent-cards/demo-treasury-agent.json",
+    endpoints: [
+      {
+        type: "mcp",
+        label: "Trace recorder MCP",
+        uri: "mcp://agent-black-box/start_trace_session"
+      },
+      {
+        type: "x402",
+        label: "Paid verification report",
+        uri: "/api/verify/demo-treasury-agent"
+      }
+    ],
+    trustModels: ["trace-session-proof", "human-readable-json", "onchain-content-hash"]
+  };
 }
