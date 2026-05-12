@@ -12,7 +12,8 @@
     "schema:build": "npm --workspace @agent-black-box/trace-schema run build",
     "schema:test": "npm --workspace @agent-black-box/trace-schema test",
     "contracts:build": "cd contracts && forge build",
-    "runner:demo": "npm run schema:build && npm run contracts:build && npm --workspace runner run demo:scripted",
+    "runner:demo": "npm run schema:build && npm run contracts:build && npm --workspace runner run demo:scripted && npm run web:prepare-session",
+    "web:prepare-session": "npm --workspace apps/web run prepare:session",
     "web:dev": "npm --workspace apps/web run dev",
     "web:build": "npm run schema:build && npm --workspace apps/web run build"
   },
@@ -20,7 +21,5 @@
     "node": ">=20.19.0",
     "npm": ">=10.0.0"
   },
-  "dependencies": {
-    "viem": "^2.48.11"
-  }
+  "dependencies": {}
 }

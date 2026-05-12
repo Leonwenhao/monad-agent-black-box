@@ -1,0 +1,142 @@
+{
+  "mode": "scripted-onchain",
+  "runner": {
+    "name": "@agent-black-box/runner",
+    "version": "0.1.0"
+  },
+  "sessionId": "0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d",
+  "createdAt": "2026-05-12T05:01:25.568Z",
+  "eventCount": 8,
+  "traces": [
+    {
+      "step": 1,
+      "eventType": "goal.received",
+      "contentHash": "0x5ec10362bc51b8c99ecca3f565bb304276542ef63e820d3157e7effac9f8cfee",
+      "uri": "local://traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d/1.json",
+      "role": "user"
+    },
+    {
+      "step": 2,
+      "eventType": "plan.created",
+      "contentHash": "0x6185514e9675e286d4aab9a347033190b45d0ab915b9f1627b0e59ba032474f3",
+      "uri": "local://traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d/2.json",
+      "role": "planner"
+    },
+    {
+      "step": 3,
+      "eventType": "tool.simulation",
+      "contentHash": "0x22fa2d1899966f6cb6744d82791f1f4abc022ee8bdb79a55a8d581130cfeff3b",
+      "uri": "local://traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d/3.json",
+      "role": "executor"
+    },
+    {
+      "step": 4,
+      "eventType": "risk.rejection",
+      "contentHash": "0x2ea13009c12a4a9dc4f63e469b0f6ad63564e6cbfbb0cc31ace859b500aef67b",
+      "uri": "local://traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d/4.json",
+      "role": "risk-agent"
+    },
+    {
+      "step": 5,
+      "eventType": "policy.approved",
+      "contentHash": "0x09eb738f717f576a3c1aa333bc2c0e3a6fe00ac1b558c8cc4837f456dec8ce68",
+      "uri": "local://traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d/5.json",
+      "role": "policy-agent"
+    },
+    {
+      "step": 6,
+      "eventType": "execution.submitted",
+      "contentHash": "0x87f62aa0c66f73d756f14c9ac6b621b9d94bfe9974073b18bdcb76cdd4671685",
+      "uri": "local://traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d/6.json",
+      "role": "executor"
+    },
+    {
+      "step": 7,
+      "eventType": "execution.confirmed",
+      "contentHash": "0x1ae9734cfae3a19094ab4ab182df56f498747484818a1199909c1c35e2df9f58",
+      "uri": "local://traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d/7.json",
+      "role": "executor"
+    },
+    {
+      "step": 8,
+      "eventType": "session.summary",
+      "contentHash": "0x6d4b339e2f418c36d8aa986b6cb3e0fe50908765ba7ff1d742f3c45c5839bd64",
+      "uri": "local://traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d/8.json",
+      "role": "system"
+    }
+  ],
+  "chain": {
+    "registryAddress": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+    "demoTreasuryAddress": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+    "rpcUrl": "http://127.0.0.1:8545",
+    "ownerAddress": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "chainId": 31337,
+    "deploymentTxHashes": {
+      "traceRegistry": "0x3d259f8332a29952654bdff40f49bef3bf64ebdcdc46c20952a1adfe42393ecb",
+      "demoTreasuryAction": "0x7ef9604fad9051cfe018b2271c847247670213243d878a3a114836d3dd37498c"
+    },
+    "sessionTxHash": "0x0be08e9da73d27e832483d2dbe2129dd99e7b2118ee6ecd7b5a481b9d519b355",
+    "traceRecordTxHashes": [
+      {
+        "step": 1,
+        "eventType": "goal.received",
+        "txHash": "0xaa5282820923f8610b43280dc4e6e9be030c300a88192f9946383a6e0548c14e"
+      },
+      {
+        "step": 2,
+        "eventType": "plan.created",
+        "txHash": "0xfe414b4989076d0b347de2e77e0cb3efc4cc7b21b9aaadf64898c7951f6a0fd1"
+      },
+      {
+        "step": 3,
+        "eventType": "tool.simulation",
+        "txHash": "0x496e4d5aebfe3bf55d82c69f723876a6e1a4f1602592524bd45dff4e1b6fc694"
+      },
+      {
+        "step": 4,
+        "eventType": "risk.rejection",
+        "txHash": "0x22d5529ba00e481c57e068db87787ce61ef28ee3a076158dcc5b33a9975f8167"
+      },
+      {
+        "step": 5,
+        "eventType": "policy.approved",
+        "txHash": "0xfe5e4c01a0ce8dbd140b20cd42d108e585f579b50d8b4c9d6c81bd8ba1962bd4"
+      },
+      {
+        "step": 6,
+        "eventType": "execution.submitted",
+        "txHash": "0x0d5b124d8fc61e94719f442256031ad05fe860db84bdb852ba77b7ecf1c66f95"
+      },
+      {
+        "step": 7,
+        "eventType": "execution.confirmed",
+        "txHash": "0xf9bddfd4ba376f31bcb5ed8ce90740bbe73fdda45a2bca2e8cc186d735089ba3"
+      },
+      {
+        "step": 8,
+        "eventType": "session.summary",
+        "txHash": "0xdd0366ec5a30dba8092a4f049f502de49bcaedffa8d542eeeaf0420fb30b3884"
+      }
+    ],
+    "linkExecutionTxHash": "0x0152db48f0e63e76dac4ed0190c84152a05ea7b6d72f8e1de6d2935677dc5072",
+    "closeSessionTxHash": "0xa801b52c7b003a279f9f90135f04660effcb61af5d02a0bf21cc762f98f5df5f",
+    "executionTxHash": "0xe84736c51596699db4aa580553bc17bcb2d846213c4478a9774f27d4ccba58f9",
+    "calldataHash": "0xb929855739e52d5e9d1882fbd856e28307b667f4147b58a3f0306cae00253f4f",
+    "submitted": true,
+    "note": "local-chain deterministic run completed against Anvil-compatible RPC"
+  },
+  "outputs": {
+    "sessionDir": "runner/out/traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d",
+    "summaryPath": "runner/out/summary.json",
+    "tracePaths": [
+      "runner/out/traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d/1.json",
+      "runner/out/traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d/2.json",
+      "runner/out/traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d/3.json",
+      "runner/out/traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d/4.json",
+      "runner/out/traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d/5.json",
+      "runner/out/traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d/6.json",
+      "runner/out/traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d/7.json",
+      "runner/out/traces/0x7afd9b2ee8ba21017a4341b2993ff64096a5233654f998963602aec7ce69147d/8.json"
+    ]
+  }
+}
