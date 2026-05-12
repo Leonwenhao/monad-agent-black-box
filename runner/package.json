@@ -1,0 +1,20 @@
+{
+  "name": "@agent-black-box/runner",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "demo:scripted": "tsc -p tsconfig.json && node dist/demoScripted.js",
+    "test": "tsc -p tsconfig.json && node --test 'dist/**/*.test.js'",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@agent-black-box/trace-schema": "file:../packages/trace-schema",
+    "viem": "^2.48.11"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.17",
+    "typescript": "^5.8.3"
+  }
+}
