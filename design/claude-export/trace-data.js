@@ -1,0 +1,167 @@
+// Seeded trace for the demo session. Hashes are illustrative.
+window.TRACE_SESSION = {
+  sessionId: "0x7c4e9f2a1b8d3c5e6f7a8b9c0d1e2f3a4b5c6d7e",
+  shortSession: "sess_7c4e9f2a",
+  network: "monad-testnet",
+  chainId: 10143,
+  startedAt: "2026-05-12T14:32:08.117Z",
+  endedAt:   "2026-05-12T14:32:10.538Z",
+  goal: "Rebalance USDC exposure across Monad lending markets; target net APY ≥ 6.4% with max slippage 25 bps.",
+  agent: "rebalance-agent@0.4.2",
+  policy: "policy-v3.risk.strict",
+  registry: {
+    address: "0x9B3aE8C7d2F4A6c1E0bD52a1F47cE9D8B6f2A3c1",
+    contentHash:  "0x4a7b9f2e1c8d6a5b3f0e9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a",
+    chainHash:    "0x4a7b9f2e1c8d6a5b3f0e9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a",
+    finalTxHash:  "0xd1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2",
+    blockNumber: 18_482_173,
+    eventCount: 11,
+    gasUsed: 187_412,
+  },
+};
+
+window.TRACE_EVENTS = [
+  {
+    id: "e01", t: "00:00.000", role: "system", severity: "info",
+    title: "Session opened",
+    sub: "goal received · agent rebalance-agent@0.4.2",
+    hashStatus: "anchored",
+    payload: {
+      type: "GoalReceived",
+      goal: "Rebalance USDC exposure across Monad lending markets",
+      constraints: { minNetApy: 0.064, maxSlippageBps: 25, maxGasGwei: 80 },
+      budget: { capitalUsd: 250_000, walletBalanceUsdc: 251_402.18 },
+    },
+  },
+  {
+    id: "e02", t: "00:00.142", role: "planner", severity: "info",
+    title: "Plan generated",
+    sub: "3 candidate paths · expected value computed",
+    hashStatus: "anchored",
+    payload: {
+      type: "PlanGenerated",
+      candidates: [
+        { id: "A", path: "Aave → Curve → Aave", expectedApyDelta: 0.0091, riskScore: 0.62 },
+        { id: "B", path: "Compound → Uniswap v3 → Compound", expectedApyDelta: 0.0074, riskScore: 0.21 },
+        { id: "C", path: "Hold", expectedApyDelta: 0.0000, riskScore: 0.01 },
+      ],
+    },
+  },
+  {
+    id: "e03", t: "00:00.388", role: "simulator", severity: "info",
+    title: "Simulated · Candidate A",
+    sub: "fork @ block 18482171 · slippage 38 bps",
+    hashStatus: "anchored",
+    payload: {
+      type: "SimulationResult", candidateId: "A",
+      forkBlock: 18482171,
+      observedSlippageBps: 38, expectedSlippageBps: 22,
+      mev: { sandwichRisk: 0.41, frontrunRisk: 0.18 },
+      pnlUsd: 1843.22, durationMs: 246,
+    },
+  },
+  {
+    id: "e04", t: "00:00.521", role: "simulator", severity: "info",
+    title: "Simulated · Candidate B",
+    sub: "fork @ block 18482171 · slippage 11 bps",
+    hashStatus: "anchored",
+    payload: {
+      type: "SimulationResult", candidateId: "B",
+      forkBlock: 18482171,
+      observedSlippageBps: 11, expectedSlippageBps: 14,
+      mev: { sandwichRisk: 0.07, frontrunRisk: 0.04 },
+      pnlUsd: 1502.86, durationMs: 133,
+    },
+  },
+  {
+    id: "e05", t: "00:00.612", role: "risk", severity: "warn",
+    title: "Risk evaluation",
+    sub: "policy-v3.risk.strict · 2 candidates evaluated",
+    hashStatus: "anchored",
+    payload: {
+      type: "RiskEvaluation", policy: "policy-v3.risk.strict",
+      thresholds: { maxSlippageBps: 25, maxSandwichRisk: 0.20, maxNotionalUsd: 500_000 },
+      verdicts: [
+        { candidateId: "A", verdict: "reject", reasons: ["slippage_breach", "sandwich_risk_high"] },
+        { candidateId: "B", verdict: "approve", reasons: ["within_bounds"] },
+      ],
+    },
+  },
+  {
+    id: "e06", t: "00:00.689", role: "risk", severity: "critical",
+    title: "REJECTED · Candidate A",
+    sub: "slippage 38 bps > 25 bps · sandwich 0.41 > 0.20",
+    hashStatus: "anchored",
+    payload: {
+      type: "CandidateRejected", candidateId: "A",
+      reasonCodes: ["RISK_SLIPPAGE_BREACH", "RISK_MEV_SANDWICH_HIGH"],
+      observed: { slippageBps: 38, sandwichRisk: 0.41 },
+      threshold: { slippageBps: 25, sandwichRisk: 0.20 },
+      blocked: true,
+    },
+  },
+  {
+    id: "e07", t: "00:00.732", role: "policy", severity: "ok",
+    title: "Policy approved · Candidate B",
+    sub: "within all bounds · signer authorised",
+    hashStatus: "anchored",
+    payload: {
+      type: "PolicyApproved", candidateId: "B",
+      signer: "0x4F2c9aB7eD1c3a5B6E8d0F2a1c4B5d6E7f8a9b0c",
+      allowList: ["compound-v3-usdc", "uniswap-v3-usdc-weth-500"],
+      ttlSec: 30,
+    },
+  },
+  {
+    id: "e08", t: "00:00.901", role: "executor", severity: "info",
+    title: "Tx submitted",
+    sub: "nonce 8421 · maxFeePerGas 64 gwei · 2 calls bundled",
+    hashStatus: "pending",
+    payload: {
+      type: "TxSubmitted",
+      txHash: "0xd1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2",
+      nonce: 8421, maxFeePerGasGwei: 64,
+      calls: [
+        { to: "0x… Compound v3 USDC", fn: "withdraw(uint256)", valueUsd: 250_000 },
+        { to: "0x… Uniswap v3 Router", fn: "exactInputSingle(...)", valueUsd: 250_000 },
+      ],
+    },
+  },
+  {
+    id: "e09", t: "00:02.341", role: "chain", severity: "ok",
+    title: "Tx confirmed",
+    sub: "block 18482173 · gas 187,412 · 1 confirmation",
+    hashStatus: "confirmed",
+    payload: {
+      type: "TxConfirmed",
+      txHash: "0xd1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2",
+      blockNumber: 18482173, gasUsed: 187412, effectiveGasPriceGwei: 58,
+      logs: 7,
+    },
+  },
+  {
+    id: "e10", t: "00:02.389", role: "registry", severity: "ok",
+    title: "Trace anchored",
+    sub: "TraceRegistry.commit(contentHash) · onchain",
+    hashStatus: "anchored",
+    payload: {
+      type: "TraceAnchored",
+      registry: "0x9B3aE8C7d2F4A6c1E0bD52a1F47cE9D8B6f2A3c1",
+      method: "commit(bytes32,bytes32)",
+      contentHash: "0x4a7b9f2e1c8d6a5b3f0e9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a",
+      sessionId:   "0x7c4e9f2a1b8d3c5e6f7a8b9c0d1e2f3a4b5c6d7e",
+    },
+  },
+  {
+    id: "e11", t: "00:02.420", role: "system", severity: "ok",
+    title: "Session summary",
+    sub: "11 events · APY +0.74% · hash match",
+    hashStatus: "anchored",
+    payload: {
+      type: "SessionSummary",
+      events: 11, durationMs: 2421,
+      result: { apyDelta: 0.0074, realisedSlippageBps: 12, pnlUsd: 1487.14 },
+      proof: { contentHash: "0x4a7b9f2e…0c9b8a", chainHash: "0x4a7b9f2e…0c9b8a", match: true },
+    },
+  },
+];
