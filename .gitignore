@@ -12,3 +12,4 @@ contracts/cache/
 .env.local
 .DS_Store
 apps/web/public/session-data/
+.vercel
